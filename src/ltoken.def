@@ -70,6 +70,8 @@ DEFTOK(TK_NE,             "~=")
 #endif /* LAST_FIXED_FORMAT_TOKEN */
 
 DEFTOK(TK_NUMBER,         "<number>")
+// T8
+DEFTOK(TK_HASH,           "<hash>")
 DEFTOK(TK_LITERALLUD,     "<short literal>")
 DEFTOK(TK_LITERALUI64,    "<long literal>")
 DEFTOK(TK_NAME,           "<name>")

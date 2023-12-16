@@ -92,6 +92,9 @@ static void PrintConstant(const Proto *f, int i)
     case LUA_TUI64:
       PrintUI64(ui64value(o));
       break;
+    case LUA_TXHASH:
+      PrintUI64(ui64value(o));
+      break;
     default:				/* cannot happen */
       printf("? type=%d",ttype(o));
       break;

@@ -149,9 +149,14 @@ static void setexptypeinfo (expdesc *e, TypeInfo *t) {
 }
 
 
-static void codeliteral (LexState *ls, expdesc *e, lu_int64 l, int token) {
+static void codeliteral(LexState* ls, expdesc* e, lu_int64 l, int token) {
   int type = (token == TK_LITERALLUD) ? LUA_TLIGHTUSERDATA : LUA_TUI64;
   init_typed_exp(e, VK, luaK_literalK(ls->fs, l, token), type);
+}
+
+
+static void codexhash(LexState* ls, expdesc* e, lu_int64 l) {
+  init_typed_exp(e, VK, luaK_xhashK(ls->fs, l), LUA_TXHASH);
 }
 
 
@@ -1579,6 +1584,10 @@ static void simpleexp (LexState *ls, expdesc *v) {
     case TK_NUMBER: {
       init_typed_exp(v, VKNUM, 0, LUA_TNUMBER);
       v->u.nval = ls->t.seminfo.r;
+      break;
+    }
+    case TK_HASH: {
+      codexhash(ls, v, ls->t.seminfo.l);
       break;
     }
     case TK_LITERALLUD:

@@ -124,6 +124,7 @@ static const char *txtToken (LexState *ls, int token) {
     case TK_NAME:
     case TK_STRING:
     case TK_NUMBER:
+    case TK_HASH:
 #ifndef HKSC_MATCH_HAVOKSCRIPT_ERROR_MSG
     case TK_LITERALLUD:
     case TK_LITERALUI64:
@@ -453,6 +454,71 @@ static void read_string (LexState *ls, int del, SemInfo *seminfo) {
 }
 
 
+static void read_hash(LexState* ls, int del, SemInfo* seminfo) {
+  save_and_next(ls);
+  while (ls->current != del) {
+    if (!zhasmore(ls->z))
+      luaX_lexerror(ls, "unfinished string", TK_EOS);
+    switch (ls->current) {
+    case '\n':
+    case '\r':
+      luaX_lexerror(ls, "unfinished string hash", TK_HASH);
+      continue;  /* to avoid warnings */
+    case '\\': {
+      int c;
+      next(ls);  /* do not save the `\' */
+      if (!zhasmore(ls->z))
+        continue; /* will raise an error next loop */
+      switch (ls->current) {
+      case 'a': c = '\a'; break;
+      case 'b': c = '\b'; break;
+      case 'f': c = '\f'; break;
+      case 'n': c = '\n'; break;
+      case 'r': c = '\r'; break;
+      case 't': c = '\t'; break;
+      case 'v': c = '\v'; break;
+      case '\n':  /* go through */
+      case '\r': save(ls, '\n'); inclinenumber(ls); continue;
+      default: {
+        if (!isdigit(ls->current))
+          save_and_next(ls);  /* handles \\, \", \', and \? */
+        else {  /* \xxx */
+          int i = 0;
+          c = 0;
+          do {
+            c = 10 * c + (ls->current - '0');
+            next(ls);
+          } while (++i < 3 && isdigit(ls->current) && zhasmore(ls->z));
+          if (c > UCHAR_MAX)
+            luaX_lexerror(ls, "escape sequence too large", TK_HASH);
+          save(ls, c);
+        }
+        continue;
+      }
+      }
+      save(ls, c);
+      next(ls);
+      continue;
+    }
+    default:
+      save_and_next(ls);
+    }
+  }
+  
+  save_and_next(ls);  /* skip delimiter */
+  lu_int64 hash = 0xCBF29CE484222325;
+
+  const char* strbuff = luaZ_buffer(ls->buff) + 1;
+  size_t len = luaZ_bufflen(ls->buff) - 2;
+
+  for (size_t i = 0; i < len; i++) {
+    hash = (hash ^ tolower(strbuff[i])) * 0x100000001B3;
+  }
+
+  seminfo->l = hash & 0x7FFFFFFFFFFFFFFF;
+}
+
+
 static int llex (LexState *ls, SemInfo *seminfo) {
   luaZ_resetbuffer(ls->buff);
   for (;;) {
@@ -531,6 +597,16 @@ static int llex (LexState *ls, SemInfo *seminfo) {
       case '\'': {
         read_string(ls, ls->current, seminfo);
         return TK_STRING;
+      }
+      case '@': {
+        next(ls);
+        if (ls->current != '"' && ls->current != '\'')
+        {
+          luaX_lexerror(ls, "invalid hash string", TK_HASH);
+          break;
+        }
+        read_hash(ls, ls->current, seminfo);
+        return TK_HASH;
       }
       case '.': {
         save_and_next(ls);

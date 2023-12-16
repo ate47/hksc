@@ -285,9 +285,16 @@ static int addk (FuncState *fs, TValue *k, TValue *v) {
 }
 
 
-int luaK_stringK (FuncState *fs, TString *s) {
+int luaK_stringK(FuncState* fs, TString* s) {
   TValue o;
   setsvalue(&o, s);
+  return addk(fs, &o, &o);
+}
+
+
+int luaK_xhashK(FuncState* fs, lu_int64 s) {
+  TValue o;
+  setxhashvalue(&o, s);
   return addk(fs, &o, &o);
 }
 
@@ -304,7 +311,7 @@ int luaK_literalK(FuncState *fs, lu_int64 l, int type)
   TValue o;
   lua_assert(type == TK_LITERALLUD || type == TK_LITERALUI64);
   if (type == TK_LITERALLUD &&
-      (hksc_getintliteralsenabled(fs->H) & INT_LITERALS_LUD))
+    (hksc_getintliteralsenabled(fs->H) & INT_LITERALS_LUD))
     setpvalue(&o, lua_ui64tolud(l));
   else if (type == TK_LITERALUI64) {
     if ((hksc_getintliteralsenabled(fs->H) & INT_LITERALS_UI64) == 0)

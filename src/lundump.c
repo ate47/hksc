@@ -318,7 +318,10 @@ static void LoadConstants(LoadState *S, Proto *f)
         setsvalue2n(o,LoadString(S));
         break;
       case LUA_TUI64:
-        setui64value(o,LoadUI64(S));
+        setui64value(o, LoadUI64(S));
+        break;
+      case LUA_TXHASH:
+        setxhashvalue(o, LoadUI64(S));
         break;
       default:
         error(S,"bad constant");
