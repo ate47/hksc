@@ -46,7 +46,7 @@ const char *const luaX_tokens [] = {
 const char *const luaX_typenames [] = {
   "object", "no value", "nil", "boolean", "luserdata", "number", "string",
   "table", "invalid function", "userdata", "thread", "ifunction", "cfunction",
-  "ui64", "struct", NULL
+  "ui64", "struct", "xhash", NULL
 };
 
 
