@@ -318,12 +318,12 @@ case $game in
 esac
 
 case $game in
-	t6) lua_codiw6=0; lua_codt6=1; lua_codt7=0 ;;
-	t7) lua_codiw6=0; lua_codt6=1; lua_codt7=1 ;;
+	t6) lua_codiw6=0; lua_codt6=1; lua_codt7=0; lua_codt8=0 ;;
+	t7) lua_codiw6=0; lua_codt6=1; lua_codt7=1; lua_codt8=0 ;;
 	t8) lua_codiw6=0; lua_codt6=1; lua_codt7=1; lua_codt8=1 ;;
 	iw6|s1)
-		lua_codiw6=1; lua_codt6=0; lua_codt7=0 ;;
-	*) lua_codiw6=0; lua_codt6=0; lua_codt7=0 ;;
+		lua_codiw6=1; lua_codt6=0; lua_codt7=0; lua_codt8=0 ;;
+	*) lua_codiw6=0; lua_codt6=0; lua_codt7=0; lua_codt8=0 ;;
 esac
 
 # configure compatibility settings based on the build config type

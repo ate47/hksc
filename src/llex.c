@@ -452,7 +452,16 @@ static void read_string (LexState *ls, int del, SemInfo *seminfo) {
   seminfo->ts = luaX_newstring(ls, luaZ_buffer(ls->buff) + 1,
                                    luaZ_bufflen(ls->buff) - 2);
 }
-static void read_hash(LexState* ls, int del, SemInfo* seminfo) {
+
+static void read_xhash(LexState* ls, int del, SemInfo* seminfo) {
+  (void)del;
+  (void)seminfo;
+#ifndef LUA_CODT8
+  luaX_inputerror(ls, "xhash not supported");
+#else /*LUA_CODT8*/
+#ifdef LUA_UI64_S
+  luaX_inputerror(ls, "xhash not supported with LUA_UI64_S");
+#else /*!LUA_UI64_S*/
   unsigned long long hash;
   const char *strbuff;
   int len;
@@ -472,6 +481,7 @@ static void read_hash(LexState* ls, int del, SemInfo* seminfo) {
       if (!zhasmore(ls->z))
         continue; /* will raise an error next loop */
       switch (ls->current) {
+      case '\\': c = '/'; break;
       case 'a': c = '\a'; break;
       case 'b': c = '\b'; break;
       case 'f': c = '\f'; break;
@@ -506,7 +516,6 @@ static void read_hash(LexState* ls, int del, SemInfo* seminfo) {
       save_and_next(ls);
     }
   }
-  
   save_and_next(ls);  /* skip delimiter */
   hash = 0xCBF29CE484222325ull;
   strbuff = luaZ_buffer(ls->buff) + 1;
@@ -515,6 +524,8 @@ static void read_hash(LexState* ls, int del, SemInfo* seminfo) {
     hash = (hash ^ tolower(strbuff[i])) * 0x100000001B3;
   }
   seminfo->l = hash & 0x7FFFFFFFFFFFFFFFull;
+#endif /*LUA_UI64_S*/
+#endif /*LUA_CODT8*/
 }
 
 static int llex (LexState *ls, SemInfo *seminfo) {
@@ -603,7 +614,7 @@ static int llex (LexState *ls, SemInfo *seminfo) {
           luaX_lexerror(ls, "invalid hash string", TK_XHASH);
           break;
         }
-        read_hash(ls, ls->current, seminfo);
+        read_xhash(ls, ls->current, seminfo);
         return TK_XHASH;
       }
       case '.': {
