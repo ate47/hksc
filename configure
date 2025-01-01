@@ -43,6 +43,7 @@ Havok Script Compatibility Options:
                            Supported values:
                              t6 (Also enables T6 extensions)
                              t7 (Same as t6 but also enables T7 extensions)
+                             t8 (Same as t7 but also enables T8 extensions)
                              sekiro, ds3 (Enables FromSoftware extensions)
                              iw6, s1 (Enabled IW6 extensions)
                              none (disable all features)
@@ -319,6 +320,7 @@ esac
 case $game in
 	t6) lua_codiw6=0; lua_codt6=1; lua_codt7=0 ;;
 	t7) lua_codiw6=0; lua_codt6=1; lua_codt7=1 ;;
+	t8) lua_codiw6=0; lua_codt6=1; lua_codt7=1; lua_codt8=1 ;;
 	iw6|s1)
 		lua_codiw6=1; lua_codt6=0; lua_codt7=0 ;;
 	*) lua_codiw6=0; lua_codt6=0; lua_codt7=0 ;;
@@ -326,7 +328,7 @@ esac
 
 # configure compatibility settings based on the build config type
 case $game in
-	t6|t7|none)
+	t6|t7|t8|none)
 		STRUCTURE_EXTENSION_ON=0
 		GETGLOBAL_MEMOIZATION=0
 		WITHDOUBLES=0
@@ -474,6 +476,7 @@ logvar test_static
 logvar game
 logvar lua_codt6
 logvar lua_codt7
+logvar lua_codt8
 logvar lua_codiw6
 logvar lua_multiplat
 logvar with_table_size
@@ -652,6 +655,7 @@ s/@LUACONFIG_EMU_UI64@/$emu_ui64/g
 s/@LUACONFIG_DECOMPILER@/$with_decompiler/g
 s/@LUACONFIG_CODT6@/$lua_codt6/g
 s/@LUACONFIG_CODT7@/$lua_codt7/g
+s/@LUACONFIG_CODT8@/$lua_codt8/g
 s/@LUACONFIG_CODIW6@/$lua_codiw6/g
 s/@LUACONFIG_MULTIPLAT@/$lua_multiplat/g
 s/@LUACONFIG_TABLESIZE@/$with_table_size/g

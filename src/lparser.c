@@ -154,6 +154,9 @@ static void codeliteral (LexState *ls, expdesc *e, lu_int64 l, int token) {
   init_typed_exp(e, VK, luaK_literalK(ls->fs, l, token), type);
 }
 
+static void codexhash(LexState* ls, expdesc* e, lu_int64 l) {
+  init_typed_exp(e, VK, luaK_xhashK(ls->fs, l), LUA_TXHASH);
+}
 
 static void codestring (LexState *ls, expdesc *e, TString *s) {
   init_typed_exp(e, VK, luaK_stringK(ls->fs, s), LUA_TSTRING);
@@ -1618,6 +1621,10 @@ static void simpleexp (LexState *ls, expdesc *v) {
     case TK_LITERALLUD:
     case TK_LITERALUI64: {
       codeliteral(ls, v, ls->t.seminfo.l, ls->t.token);
+      break;
+    }
+    case TK_XHASH: {
+      codexhash(ls, v, ls->t.seminfo.l);
       break;
     }
     case TK_STRING: {

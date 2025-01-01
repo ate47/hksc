@@ -190,6 +190,11 @@ static void print_config(void)
 #else /* !LUA_CODT7 */
   fputs("  T7 extensions              Disabled\n", stdout);
 #endif /* LUA_CODT7 */
+#ifdef LUA_CODT8
+  fputs("  T8 extensions              Enabled\n", stdout);
+#else /* !LUA_CODT8 */
+  fputs("  T8 extensions              Disabled\n", stdout);
+#endif /* LUA_CODT8 */
 #ifdef LUA_CODIW6
   fputs("  IW6 extensions             Enabled\n", stdout);
 #else /* !LUA_CODIW6 */

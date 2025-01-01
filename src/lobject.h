@@ -98,6 +98,7 @@ typedef struct lua_TValue {
 #define ttisstruct(o)  (ttype(o) == LUA_TSTRUCT)
 #define ttisifunction(o)  (ttype(o) == LUA_TIFUNCTION)
 #define ttiscfunction(o)  (ttype(o) == LUA_TCFUNCTION)
+#define ttishash(o)  (ttype(o) == LUA_TXHASH)
 
 /* Macros to access values */
 #define ttype(o)  ((o)->tt)
@@ -166,6 +167,8 @@ typedef struct lua_TValue {
 #define setui64value(obj,x) do \
   { TValue *i_o=(obj); i_o->value.l=(x); i_o->tt=LUA_TUI64; } while (0)
 
+#define setxhashvalue(obj,x) do \
+  { TValue *i_o=(obj); i_o->value.l=(x); i_o->tt=LUA_TXHASH; } while (0)
 
 
 

@@ -106,8 +106,14 @@ typedef void * (*lua_Alloc) (void *ud, void *ptr, size_t osize, size_t nsize);
 #define LUA_TCFUNCTION  10
 #define LUA_TUI64       11
 #define LUA_TSTRUCT     12
+#define LUA_TXHASH      13
 
+#ifdef LUA_CODT8 /* LUA_CODT8 */
+#define LUA_NUM_TYPE_OBJECTS 15
+#else /* !LUA_CODT8 */
 #define LUA_NUM_TYPE_OBJECTS 14
+#endif /* LUA_CODT8 */
+
 
 
 /*

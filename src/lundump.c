@@ -320,6 +320,9 @@ static void LoadConstants(LoadState *S, Proto *f)
       case LUA_TUI64:
         setui64value(o,LoadUI64(S));
         break;
+      case LUA_TXHASH:
+        setxhashvalue(o, LoadUI64(S));
+        break;
       default:
         error(S,"bad constant");
         break;

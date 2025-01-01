@@ -50,6 +50,13 @@
 #undef LUA_CODIW6
 #endif
 
+/* T8 compatibility */
+#if @LUACONFIG_CODT8@
+#define LUA_CODT8
+#else
+#undef LUA_CODT8
+#endif
+
 /* T7 compatibility */
 #if @LUACONFIG_CODT7@
 #define LUA_CODT7

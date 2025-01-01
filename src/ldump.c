@@ -276,6 +276,9 @@ static void DumpConstants(const Proto *f, DumpState *D)
       case LUA_TUI64:
         DumpUI64(ui64value(o),D);
         break;
+      case LUA_TXHASH:
+        DumpUI64(ui64value(o), D);
+        break;
       default:
         lua_assert(0);			/* cannot happen */
         break;

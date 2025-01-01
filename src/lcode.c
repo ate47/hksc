@@ -288,6 +288,11 @@ int luaK_stringK (FuncState *fs, TString *s) {
   return addk(fs, &o, &o);
 }
 
+int luaK_xhashK(FuncState* fs, lu_int64 s) {
+  TValue o;
+  setxhashvalue(&o, s);
+  return addk(fs, &o, &o);
+}
 
 int luaK_numberK (FuncState *fs, lua_Number r) {
   TValue o;
