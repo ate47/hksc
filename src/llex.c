@@ -506,13 +506,22 @@ static void read_hash(LexState* ls, int del, SemInfo* seminfo) {
   }
   
   save_and_next(ls);  /* skip delimiter */
-  lu_int64 hash = 0xCBF29CE484222325;
+  lu_int64 hash;
 
-  const char* strbuff = luaZ_buffer(ls->buff) + 1;
+  char* strbuff = luaZ_buffer(ls->buff) + 1;
   size_t len = luaZ_bufflen(ls->buff) - 2;
 
-  for (size_t i = 0; i < len; i++) {
-    hash = (hash ^ tolower(strbuff[i])) * 0x100000001B3;
+  if (len > 5 && !memcmp("hash_", strbuff, 5)) {
+    char oldend = strbuff[len];
+    strbuff[len] = 0;
+    hash = strtoull(strbuff + 5, NULL, 16);
+    strbuff[len] = oldend;
+  }
+  else {
+    hash = 0xCBF29CE484222325;
+    for (size_t i = 0; i < len; i++) {
+      hash = (hash ^ tolower(strbuff[i])) * 0x100000001B3;
+    }
   }
 
   seminfo->l = hash & 0x7FFFFFFFFFFFFFFF;
