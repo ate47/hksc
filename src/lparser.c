@@ -1083,11 +1083,22 @@ static void field (LexState *ls, expdesc *v, int type) {
   expdesc key;
   luaK_exp2anyreg(fs, v);
   luaX_next(ls);  /* skip the dot or colon */
-  name = str_checkname(ls);
-  codestring(ls, &key, name);
-  if (type != NAMEPART_NONE) {
-    lua_assert(type == NAMEPART_FIELD || type == NAMEPART_SELF);
-    addnamepart(ls, name, type); /* add the name part to the chain */
+  if (ls->t.token == TK_NAME) {
+    name = str_checkname(ls);
+    codestring(ls, &key, name);
+
+    if (type != NAMEPART_NONE) {
+      lua_assert(type == NAMEPART_FIELD || type == NAMEPART_SELF);
+      addnamepart(ls, name, type); /* add the name part to the chain */
+    }
+  }
+  else if (ls->t.token == TK_HASH) {
+    codexhash(ls, &key, ls->t.seminfo.l);
+    luaX_next(ls);
+  }
+  else {
+    luaX_syntaxerror(ls,
+      luaO_pushfstring(ls->H, "%s or %s expected", luaX_token2str(ls, TK_HASH), luaX_token2str(ls, TK_NAME)));
   }
   luaK_indexed(fs, v, &key);
 }
